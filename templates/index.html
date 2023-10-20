@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Localização dos Robôs</title>
+    <style>
+        th {
+            font-weight: bold;
+        }
+
+        td {
+            padding: 8px;
+        }
+    </style>
+    <script>
+        function updateLocation() {
+            fetch('/update')  // Rota para atualizar dados
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('robot-table');
+                    table.innerHTML = '';  // Limpa a tabela
+    
+                    data.robot_data.forEach(robot => {
+                        const row = table.insertRow();
+                        const cell1 = row.insertCell(0);
+                        const cell2 = row.insertCell(1);
+                        cell1.innerHTML = `<b>Robot ${robot.robot_id}</b>`;
+                        cell2.innerHTML = `${robot.latitude}, ${robot.longitude}`;
+                    });
+                });
+        }
+    
+        setInterval(updateLocation, 1000); // Atualiza a cada 1 segundo
+    </script>
+    
+</head>
+<body>
+    <table id="robot-table">
+        <tr>
+            <th>Robot</th>
+            <th>Latitude / Longitude</th>
+        </tr>
+        {% for robot_id, latitude, longitude in robot_data %}
+            <tr>
+                <td><b>Robot {{ robot_id }}</b></td>
+                <td>{{ latitude }}, {{ longitude }}</td>
+            </tr>
+        {% endfor %}
+    </table>    
+</body>
+</html>
